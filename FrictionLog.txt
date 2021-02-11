@@ -1,0 +1,20 @@
+Development experience:
+
+All the steps for making a basic transaction are pretty straightforward e.g. creating a payments intent, retrieving the client secret and charging the card, which makes sense, given that Stripe has worked on this specific business for close to a decade, and has emphasized ease in the developer experience.  
+
+I think the documentation could be more tightly coupled with sample client and server code - it currently assumes medium development competency, but I think there are opportunities for beginners to have a more "plug an play approach, without having to use the prebuilt checkout page e.g. a developer building a react client app should be able to clone a git repo with variants of the most popular types of react implementations that you have seen. Specifically relevant to a person like me who has development experience, but has not actively coded in years ; the stripe target market generally has ongoing development experience, but I think there's a bigger opportunity for less capable developers to easily understand how to plug into an existing framework with limited technical know how. 
+
+The wide range of test cards provided for dozens of test cases at https://stripe.com/docs/testing is also extremely useful for fool-proofing the integration
+
+Areas of opportunity (scoped beyond existing functionality):
+
+I am focusing on a specific strategic areas that align with merchant goals e.g. driving up conversion. Given the fact that incremental steps in the purchase experience lead to user dropoff.
+
+Idea for expanding payment APIs: Stripe consumer payment profiles
+- Give consumers the ability to turn on consumer payments profiles for use across multiple merchange. Note that this is a broader use case than stripe billing customer @ https://stripe.com/docs/billing/customer which is primarily for subscriptions and invoicing 
+- When users opt into creating a consumer profile, this profile is enabled by default across stripe merchants with user consent and an optional developer parameter to give users the option to save new payment instruments to their existing consumer profile in the buy flow with stripe merchants
+- Users should also have the option to connect user profiles to other "wallet" products that will have more FOPs available for use (e.g. Paypal, Google Pay)
+- From the developer/merchant perspective, developer should be able to call an "isReadyToPay" API which would determine whether they show an empty card form or a form with UX showing a card selector containing cards and other FOPs that users have already saved with Stripe (we won't return the actual payment instrument, just enough data to render the card selector in the purchase flow e.g. last 4 of card, card network). "IsReadyToPay" can identify the user by leveraging a browser cookie
+- Merchants should be able to set a param via stripe APis that gives the users the option to set a default payment method from their Stripe consumer profile
+- This can save over 20 clicks for users with stripe profiles in transactions i.e. skip all the keyboard clicks to enter credit card credentials 
+- An additional thing that can happen here when we have "stripe consumer profiles" is that we can increase auth rates, by tokenizing the stored user credentials directly with networks like Visa/MC/Amex (all of which have cloud tokenization programs that make tokens that can still be charged even when there are issues with the original underlying payment instrument - because the token always points to the most up to date credential with the issuer via the network rails)
